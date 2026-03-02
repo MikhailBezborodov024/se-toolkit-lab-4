@@ -20,18 +20,43 @@ def test_filter_returns_empty_for_empty_input() -> None:
 
 
 def test_filter_returns_interaction_with_matching_ids() -> None:
-    interactions = [_make_log(1, 1, 1), _make_log(2, 2, 2)]
-    result = _filter_by_item_id(interactions, 1)
-    assert len(result) == 1
-    assert result[0].id == 1
+        interactions = [_make_log(1, 1, 1), _make_log(2, 2, 2)]
+        result = _filter_by_item_id(interactions, 1)
+        assert len(result) == 1
+        assert result[0].id == 1
 
 def test_filter_excludes_interaction_with_different_learner_id() -> None:
-    """Test that filtering by item_id=1 includes interaction where item_id=1, learner_id=2."""
-    # Use the same pattern as existing tests
-    interactions = [_make_log(1, 2, 1), _make_log(2, 3, 2)]  # id, learner_id, item_id
-    filtered = _filter_by_item_id(interactions, 1)
-    
-    # Should return the interaction with item_id=1 (not learner_id=1)
-    assert len(filtered) >= 1
-    assert filtered[0].item_id == 1
+        """Test that filtering by item_id=1 includes interaction where item_id=1, learner_id=2."""
+        # Use the same pattern as existing tests
+        interactions = [_make_log(1, 2, 1), _make_log(2, 3, 2)]  # id, learner_id, item_id
+        filtered = _filter_by_item_id(interactions, 1)
+        
+        # Should return the interaction with item_id=1 (not learner_id=1)
+        assert len(filtered) >= 1
+        assert filtered[0].item_id == 1
 
+def test_filter_with_negative_item_id() -> None:
+        """Test filtering with negative item_id returns empty list."""
+        interactions = [_make_log(1, 1, 1), _make_log(2, 2, 2)]
+        result = _filter_by_item_id(interactions, -1)
+        assert result == []
+
+
+def test_filter_with_zero_item_id() -> None:
+        """Test filtering with item_id=0 returns empty list."""
+        interactions = [_make_log(1, 1, 1), _make_log(2, 2, 2)]
+        result = _filter_by_item_id(interactions, 0)
+        assert result == []
+
+
+def test_filter_preserves_order() -> None:
+        """Test that filtering preserves the original order of interactions."""
+        interactions = [
+            _make_log(1, 1, 1),
+            _make_log(2, 2, 1),
+            _make_log(3, 3, 2),
+        ]
+        result = _filter_by_item_id(interactions, 1)
+        assert len(result) == 2
+        assert result[0].id == 1
+        assert result[1].id == 2
