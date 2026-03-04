@@ -2,6 +2,8 @@ services:
   app:
     build: .
     restart: unless-stopped
+    env_file:
+      - .env.docker.secret
     ports:
       - ${APP_HOST_ADDRESS}:${APP_HOST_PORT}:${APP_CONTAINER_PORT}
     expose:
