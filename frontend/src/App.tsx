@@ -19,7 +19,7 @@ function App() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
+  const [filterType, setFilterType] = useState<string>('all')
   useEffect(() => {
     if (!token) return
 
@@ -42,6 +42,10 @@ function App() {
         setLoading(false)
       })
   }, [token])
+
+  const filteredItems = filterType === 'all' 
+  ? items 
+  : items.filter(item => item.type === filterType)
 
   function handleConnect(e: FormEvent) {
     e.preventDefault()
@@ -83,6 +87,23 @@ function App() {
           Disconnect
         </button>
       </header>
+	
+	<div style={{ marginBottom: '20px', padding: '10px' }}>
+  <label>
+    Filter by Type:{' '}
+    <select 
+      value={filterType} 
+      onChange={(e) => setFilterType(e.target.value)}
+      style={{ padding: '5px', marginLeft: '10px' }}
+    >
+      <option value="all">All Types</option>
+      <option value="course">Course</option>
+      <option value="lab">Lab</option>
+      <option value="task">Task</option>
+      <option value="step">Step</option>
+    </select>
+  </label>
+</div>
 
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
